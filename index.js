@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt')
 
 initializeDatabase()
 
-// const SECRET_KEY = "supersecretadmin"
+const SECRET_KEY = "supersecretadmin"
 const JWT_SECRET = "jwt_secret"
 const saltRounds = 10 
 // Salt Rounds in bcrypt indicates the cost factor i.e the number of iterations bcrypt uses to process the password hashing. Higher salt rounds make the hashing more secure but also more computationally expensive, usually a value between 10 and 12 is standard for balancing security and performances.
@@ -47,6 +47,20 @@ const verifyJWT = (req, res, next) => {
     }
 
 }
+
+
+
+app.post('/admin/login', (req, res) => {
+    const {secret} = req.body
+
+    if(secret === SECRET_KEY){
+        const token = jwt.sign({role: "admin"}, JWT_SECRET, {expiresIn: "24h"})
+        res.json({token, message: "Access Granted"})
+    }
+    else {
+        res.json({message: "Invalid Secret"})
+    }
+})
 
 
 
