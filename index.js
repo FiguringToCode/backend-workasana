@@ -194,7 +194,7 @@ const getAllProjects = async () => {
     }
 }
 
-app.post('/projects', verifyJWT, async (req, res) => {
+app.get('/projects', verifyJWT, async (req, res) => {
     try {
         const project = await getAllProjects()
         project.length > 0 ? res.json(project) : res.status(400).json({error: "Project not found", })
