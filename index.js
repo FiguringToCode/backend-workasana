@@ -88,7 +88,8 @@ app.post('/user/signup', async (req, res) => {
 app.post('/user/login', async (req, res) => {
     const { username, password } = req.body
     try {
-        const user = await User.findOne({username: username})
+        const user = new User({username: username})
+        await user.save()
         if(!user){
             return res.status(401).json({error: "Invalid username"})
         }
