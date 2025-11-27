@@ -10,6 +10,8 @@ const app = express()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
+initializeDatabase()
+
 const SECRET_KEY = "supersecretadmin"
 const JWT_SECRET = "jwt_secret"
 const saltRounds = 10 
@@ -38,6 +40,7 @@ const verifyJWT = (req, res, next) => {
     try {
         const decodedToken = jwt.verify(token, JWT_SECRET)
         req.user = decodedToken
+        console.log(req.user)
         next()
 
     } catch (error) {
@@ -70,9 +73,9 @@ app.post('/user/signup', async (req, res) => {
         if(userExists){
             return res.status(400).json({error: "Username already exists"})
         }
-        const user = new User({username, password, email})
+        const hashedPassword = await bcrypt.hash(password, saltRounds)
+        const user = new User({username, password: hashedPassword, email})
         await user.save()
-        console.log('User saved with hashed password:', user.password);
         res.status(201).json({message: "User registered successfully"})
 
     } catch (error) {
@@ -86,20 +89,11 @@ app.post('/user/signup', async (req, res) => {
 app.post('/user/login', async (req, res) => {
     const { username, password } = req.body
     try {
-        await initializeDatabase()
-        const { username, password } = req.body;
-        if (!username || !password) {
-            return res.status(400).json({ error: "Username and password required" });
-        }
-        const user = User.findOne({username: username})
-        console.log('Full user document:', JSON.stringify(user, null, 2)); // ADD THIS
-        console.log('User password field:', user?.password); // ADD THIS
+        const user = await User.findOne({username: username})
         if(!user){
             return res.status(401).json({error: "Invalid username"})
         }
-        if (!user.password) {
-            return res.status(500).json({ error: "User password not set" });
-        }
+
         const isPasswordMatch = await bcrypt.compare(password, user.password)
         if(!isPasswordMatch){
             return res.status(401).json({error: "Invalid password"})
@@ -334,7 +328,7 @@ app.post('/tag', verifyJWT, async (req, res) => {
 
 
 
-const PORT = process.env.MONGODB
+const PORT = 3000
 app.listen(PORT, () => {
     console.log("Server connected to port", PORT)
 })
