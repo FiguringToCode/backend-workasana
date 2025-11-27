@@ -10,8 +10,6 @@ const app = express()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-initializeDatabase()
-
 const SECRET_KEY = "supersecretadmin"
 const JWT_SECRET = "jwt_secret"
 const saltRounds = 10 
@@ -88,7 +86,8 @@ app.post('/user/signup', async (req, res) => {
 app.post('/user/login', async (req, res) => {
     const { username, password } = req.body
     try {
-        const user = await User.findOne({username: username})
+        await initializeDatabase()
+        const user = User.findOne({username: username})
         if(!user){
             return res.status(401).json({error: "Invalid username"})
         }
