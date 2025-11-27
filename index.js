@@ -70,9 +70,9 @@ app.post('/user/signup', async (req, res) => {
         if(userExists){
             return res.status(400).json({error: "Username already exists"})
         }
-        const hashedPassword = await bcrypt.hash(password, saltRounds)
-        const user = new User({username, password: hashedPassword, email})
+        const user = new User({username, password, email})
         await user.save()
+        console.log('User saved with hashed password:', user.password);
         res.status(201).json({message: "User registered successfully"})
 
     } catch (error) {
