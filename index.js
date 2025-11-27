@@ -92,6 +92,8 @@ app.post('/user/login', async (req, res) => {
             return res.status(400).json({ error: "Username and password required" });
         }
         const user = User.findOne({username: username})
+        console.log('Full user document:', JSON.stringify(user, null, 2)); // ADD THIS
+        console.log('User password field:', user?.password); // ADD THIS
         if(!user){
             return res.status(401).json({error: "Invalid username"})
         }
