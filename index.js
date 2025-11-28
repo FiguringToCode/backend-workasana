@@ -160,6 +160,27 @@ app.get('/tasks', verifyJWT, async (req, res) => {
 
 
 
+const updateStatusById = async (taskId, dataToUpdate) => {
+    try {
+        const updateStatus = await Task.findByIdAndUpdate(taskId, dataToUpdate, {new: true})
+        return updateStatus
+    } catch (error) {
+        throw error
+    }
+}
+
+app.post('/tasks/status/:taskId', verifyJWT, async(req, res) => {
+    try {
+        const updatedStatus = await updateStatusById(req.params.taskId, req.body)
+        updatedStatus ? res.status(200).json({message: "Status updated successfully.", updatedStatus: updatedStatus}) : res.status(400).json({message: "Unable to update status."})
+
+    } catch (error) {
+        res.status(404).json({error: error.message})
+    }
+})
+
+
+
 const createNewProject = async (newProject) => {
     try {
         const project = new Project(newProject)
@@ -328,7 +349,7 @@ app.post('/tag', verifyJWT, async (req, res) => {
 
 
 
-const PORT = 3000
+const PORT = process.env.MONGODB
 app.listen(PORT, () => {
     console.log("Server connected to port", PORT)
 })
