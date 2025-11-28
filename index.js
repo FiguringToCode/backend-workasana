@@ -10,6 +10,7 @@ const app = express()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
+initializeDatabase()
 
 const SECRET_KEY = "supersecretadmin"
 const JWT_SECRET = "jwt_secret"
@@ -68,7 +69,6 @@ app.post('/admin/login', (req, res) => {
 app.post('/user/signup', async (req, res) => {
     const {username, password, email} = req.body
     try {
-        initializeDatabase()
         const userExists = await User.findOne({username: username})
         if(userExists){
             return res.status(400).json({error: "Username already exists"})
@@ -89,7 +89,6 @@ app.post('/user/signup', async (req, res) => {
 app.post('/user/login', async (req, res) => {
     const { username, password } = req.body
     try {
-        initializeDatabase()
         const user = await User.find({username: username})
         if(!user){
             return res.status(401).json({error: "Invalid username"})
@@ -350,7 +349,7 @@ app.post('/tag', verifyJWT, async (req, res) => {
 
 
 
-const PORT = process.env.MONGODB
+const PORT = 3000
 app.listen(PORT, () => {
     console.log("Server connected to port", PORT)
 })
