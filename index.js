@@ -349,7 +349,7 @@ app.post('/tag', verifyJWT, async (req, res) => {
 
 
 
-const PORT = 5176
+const PORT = process.env.MONGODB
 app.listen(PORT, () => {
     console.log("Server connected to port", PORT)
 })
