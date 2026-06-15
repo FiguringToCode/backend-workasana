@@ -9,7 +9,13 @@ const initializeDatabase = async () => {
         bufferCommands: false
     })
     .then(() => {
-        console.log('Connected to Database')
+        if(mongoose.connection.readyState !== 1){
+            console.log("Database not ready")
+            return "Database not ready"
+        } else {
+            console.log("Connected to database")
+            return "Connected to Database"
+        }
     })
     .catch((error) => {
         console.log('Error connecting to database', error)

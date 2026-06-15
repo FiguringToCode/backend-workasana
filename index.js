@@ -89,6 +89,9 @@ app.post('/user/signup', async (req, res) => {
 app.post('/user/login', async (req, res) => {
     const { username, password } = req.body
     try {
+        if(initializeDatabase === "Database not ready"){
+            return res.status(500).json({error: "Database not ready"})
+        }
         const user = await User.findOne({username: username})
         if(!user){
             return res.status(401).json({error: "Invalid username"})
