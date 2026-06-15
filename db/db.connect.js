@@ -4,10 +4,7 @@ require('dotenv').config()
 const mongoUri = process.env.MONGODB
 
 const initializeDatabase = async () => {
-    await mongoose.connect(mongoUri, {
-        serverSelectionTimeoutMS: 5000,
-        bufferCommands: false
-    })
+    await mongoose.connect(mongoUri)
     .then(() => {
         if(mongoose.connection.readyState !== 1){
             console.log("Database not ready")
