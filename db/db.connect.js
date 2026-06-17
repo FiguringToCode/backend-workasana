@@ -4,8 +4,9 @@ require('dotenv').config()
 const mongoUri = process.env.MONGODB
 
 const initializeDatabase = async () => {
-    await mongoose.connect(mongoUri)
-    .then(() => {
+    try {
+        await mongoose.connect(mongoUri)
+        
         if(mongoose.connection.readyState !== 1){
             console.log("Database not ready")
             return "Database not ready"
@@ -13,10 +14,10 @@ const initializeDatabase = async () => {
             console.log("Connected to database")
             return "Connected to Database"
         }
-    })
-    .catch((error) => {
-        console.log('Error connecting to database', error)
-    })
+        
+    } catch (error) {
+        console.log('Error connecting to database', error
+    )}
 }
 
 module.exports = {initializeDatabase}
